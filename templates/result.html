@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Full Fraud Detection Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto', sans-serif; margin: 30px; background-color: #f4f7fa; }
+        h2 { color: #333; text-align: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: center; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .fraud-row { background-color: #ffd2d2 !important; font-weight: bold; }
+        #searchControls { text-align: center; margin-bottom: 20px; }
+        select, input[type="text"] {
+            padding: 8px; font-size: 16px; margin-right: 10px; border-radius: 6px; border: 1px solid #ccc;
+        }
+        img { display: block; margin: 30px auto; max-width: 100%; border: 1px solid #ccc; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+<h2>Fraud Detection: Full Dataset Analysis</h2>
+
+{% if error %}
+    <p style="color: red;">{{ error }}</p>
+{% endif %}
+
+<div style="margin: 20px 0; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+    <h3>📊 Dataset Analysis Summary</h3>
+    <ul style="font-size: 16px; list-style-type: none; padding: 0;">
+        <li><strong>Total Transactions:</strong> {{ total }}</li>
+        <li><strong>Fraudulent Transactions:</strong> {{ fraud_count }}</li>
+        <li><strong>Non-Fraudulent Transactions:</strong> {{ nonfraud_count }}</li>
+        <li><strong>Fraud Rate:</strong> {{ fraud_percent }}%</li>
+    </ul>
+</div>
+
+<div id="searchControls">
+    <label>Search by:</label>
+    <select id="searchColumn">
+        <option value="all">All Columns</option>
+        {% for col in table_headers %}
+            <option value="{{ loop.index0 }}">{{ col }}</option>
+        {% endfor %}
+    </select>
+    <input type="text" id="searchInput" placeholder="Type to search..." onkeyup="filterTable()">
+</div>
+
+<table id="resultsTable">
+    <thead>
+        <tr>{% for col in table_headers %}<th>{{ col }}</th>{% endfor %}</tr>
+    </thead>
+    <tbody>
+        {% for row in table_rows %}
+            <tr class="{{ 'fraud-row' if row['Prediction'] == 'Fraud' else '' }}">
+                {% for col in table_headers %}<td>{{ row[col] }}</td>{% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Correlation Heatmap</h3>
+<img src="{{ heatmap_path }}" alt="Heatmap">
+
+<h3>Feature Importances</h3>
+<img src="{{ importance_path }}" alt="Feature Importances">
+
+<script>
+function filterTable() {
+    const input = document.getElementById("searchInput").value.toLowerCase();
+    const columnIndex = document.getElementById("searchColumn").value;
+    const rows = document.querySelectorAll("#resultsTable tbody tr");
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+        let match = false;
+        if (columnIndex === "all") {
+            for (let cell of cells) {
+                if (cell.textContent.toLowerCase().includes(input)) {
+                    match = true; break;
+                }
+            }
+        } else {
+            const cell = cells[columnIndex];
+            if (cell && cell.textContent.toLowerCase().includes(input)) match = true;
+        }
+        row.style.display = match ? "" : "none";
+    });
+}
+</script>
+
+</body>
+</html>

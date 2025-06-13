@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Dataset</title>
+</head>
+<body>
+    <h2>Search Transaction Data</h2>
+    <form method="POST">
+        <input type="text" name="query" placeholder="Search term" required>
+        <select name="column">
+            <option value="all">All Columns</option>
+            <option value="Transaction Amount">Transaction Amount</option>
+            <option value="Customer Age">Customer Age</option>
+            <option value="Device Used">Device Used</option>
+            <option value="Prediction">Prediction</option>
+        </select>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+
+    {% if results %}
+        <table border="1">
+            <tr>
+                {% for key in results[0].keys() %}
+                    <th>{{ key }}</th>
+                {% endfor %}
+            </tr>
+            {% for row in results %}
+                <tr>
+                    {% for val in row.values() %}
+                        <td>{{ val }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</body>
+</html>
