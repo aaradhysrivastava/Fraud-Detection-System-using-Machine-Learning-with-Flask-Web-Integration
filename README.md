@@ -1,0 +1,2 @@
+# Fraud-Detection-System-using-Machine-Learning-with-Flask-Web-Integration
+A Flask-based web application that detects fraudulent transactions using a trained Logistic Regression model. This project includes data preprocessing, model training, SHAP explainability, and a user-friendly interface for predictions and visual insights.  Tech Stack: Python · Flask · Scikit-learn · HTML · CSS · JavaScript · Pandas · SHAP Features:
